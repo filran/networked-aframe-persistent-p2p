@@ -3,5 +3,11 @@ html
   head
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src="https://aframe.io/releases/1.4.0/aframe.min.js") 
+
+    //- NAF basic requirements
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.5.0/socket.io.slim.js") 
+    //- script(src="/easyrtc/easyrtc.js") 
+    script(src="/javascripts/networked-aframe.js") 
   body
     block content
