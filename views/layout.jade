@@ -9,11 +9,15 @@ html
 
     script(src="https://aframe.io/releases/1.4.0/aframe.min.js") 
 
+    script(src="/javascripts/mycube.component.js") 
+
     //- NAF basic requirements
     //- script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.5.0/socket.io.slim.js") 
     script(src="/socketio/socket.io.slim.js") 
     script(src="/easyrtc/easyrtc.js")
     script(src="/javascripts/networked-aframe.js") 
+
+    script(src="/javascripts/persistent-p2p.component.js") 
 
     //- used for flying in this demo
     //- script(src="https://cdn.jsdelivr.net/gh/n5ro/aframe-extras@14411ea/dist/aframe-extras.controls.min.js") 
@@ -44,22 +48,31 @@ html
           NAF.schemas.add({
             template: '#avatar-template',
             components: [
-              // position and rotation are added by default if we don't include a template, but since
-              // we also want to sync the color, we need to specify a custom template; if we didn't
-              // include position and rotation in this custom template, they'd not be synced.
               'position',
               'rotation',
-
-              // this is how we sync a particular property of a particular component for a particular
-              // child element of template instances.
               {
                 selector: '.head',
                 component: 'material',
-                property: 'color' // property is optional; if excluded, syncs everything in the component schema
+                property: 'color'
               }
             ]
           });
         }
+
+        // CUBE TEMPLATE
+        if(!NAF.schemas.hasTemplate('#my-cube')){
+          NAF.schemas.add({
+            template: '#my-cube',
+            components: [
+              'position',
+              {
+                component: 'material',
+                property: 'color'
+              }
+            ]
+          });
+        }
+
         const components = NAF.schemas.getComponentsOriginal(template);
         return components;
       };    

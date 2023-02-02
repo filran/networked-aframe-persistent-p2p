@@ -6,7 +6,7 @@ block content
     .container-fluid
       a.navbar-brand#add-cube(href="#") Add Cube
 
-  a-scene(networked-scene="room: basic; debug: true; adapter: wseasyrtc;")
+  a-scene(persistent-p2p networked-scene="room: basic; debug: true; adapter: wseasyrtc;")
   
     a-assets
       //- img(id="skyTexture" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg")
@@ -15,8 +15,8 @@ block content
 
       //- Templates
       //- Camera Rig / Player
-      template(id="rig-template")
-        a-entity
+      //- template(id="rig-template")
+      //-   a-entity
 
       //- Head / Avatar // a few spheres make a head + eyes + pupils
       template(id="avatar-template")
@@ -30,19 +30,26 @@ block content
             //- eye 2
             a-sphere(class="eye" color="white" position="-0.06 0.05 -0.16" scale="0.04 0.04 0.04")
               a-sphere(class="pupil" color="black" position="0 0 -1" scale="0.2 0.2 0.2")
+      
+      template(id="my-cube")
+        a-entity(geometry="primitive:box" material="color:red" mycube)
+    
+    //- a-entity(position="1 0 0" networked="template:#my-cube")
 
     //- Here we declare only the local user's avatar, which we then broadcast to other users
-    a-entity(id="rig" spawn-in-circle="radius:3" networked="template:#rig-template;")
+    a-entity(id="rig")
       //- Here we add the camera.
       a-entity(
         id="player"
         camera
         position="0 2.5 0"
+        spawn-in-circle="radius:3"
         look-controls
         wasd-controls
-        networked="template:#avatar-template;"
+        networked="template:#avatar-template;attachTemplateToLocal:false;"
         visible="false"
       )
+        a-sphere.head(visible="false" random-color)
 
     //- environment
     a-entity(
@@ -65,11 +72,19 @@ block content
       var position = getRandomFloat(-5,5,1)+" "+getRandomFloat(-5,5,1)+""+getRandomFloat(-5,5,1);
 
       const scene = document.querySelector('a-scene');
-      const createbox =  document.createElement("a-box");
-      createbox.setAttribute('position',position);
-      createbox.setAttribute('color','blue');
-      scene.append(createbox);
-      console.log(position);
+      const el =  document.createElement("a-entity");
+      
+      el.setAttribute('mycube','');  
+      el.setAttribute('position',position);
+      el.setAttribute('networked', {persistent: true, template: '#my-cube'})
+      
+      scene.append(el);
+
+      NAF.utils.getNetworkedEntity(el).then((networkedEl) => {
+        document.body.dispatchEvent(new CustomEvent('persistentEntityCreated', {detail: {el: el}}));
+      });
+
+
     });
 
   //- BOOTSTRAP
