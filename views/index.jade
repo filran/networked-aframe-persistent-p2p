@@ -32,8 +32,8 @@ block content
               a-sphere(class="pupil" color="black" position="0 0 -1" scale="0.2 0.2 0.2")
       
       template(id="my-cube")
-        //- a-entity(geometry="primitive:box" material="color:red" mycube)
-        a-box(material="color:red")
+        a-entity(geometry="primitive:box" material="color:red" mycube)
+        //- a-box(material="color:red")
     
     //- a-entity(position="1 0 0" networked="template:#my-cube")
 
@@ -74,7 +74,7 @@ block content
       var position = getRandomFloat(-5,5,1)+" "+getRandomFloat(-5,5,1)+""+getRandomFloat(-5,5,1);
 
       const scene = document.querySelector('a-scene');
-      const box =  document.createElement("a-box");
+      const box =  document.createElement("a-entity");
       
       box.setAttribute('mycube','');  
       box.setAttribute('position',position);
