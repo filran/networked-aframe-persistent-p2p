@@ -81,7 +81,7 @@ block content
       scene.append(box);
 
       NAF.utils.getNetworkedEntity(box).then((networkedEl) => {
-        document.body.dispatchEvent(new CustomEvent('persistentEntityCreated'));
+        document.body.dispatchEvent(new CustomEvent('persistentEntityCreated', {detail: {el: box}}));
       });
 
 
