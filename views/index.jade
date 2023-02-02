@@ -72,16 +72,16 @@ block content
       var position = getRandomFloat(-5,5,1)+" "+getRandomFloat(-5,5,1)+""+getRandomFloat(-5,5,1);
 
       const scene = document.querySelector('a-scene');
-      const el =  document.createElement("a-entity");
+      const box =  document.createElement("a-entity");
       
-      el.setAttribute('mycube','');  
-      el.setAttribute('position',position);
-      el.setAttribute('networked', {persistent: true, template: '#my-cube'})
+      box.setAttribute('mycube','');  
+      box.setAttribute('position',position);
+      box.setAttribute('networked', {persistent: true, template: '#my-cube'})
       
-      scene.append(el);
+      scene.append(box);
 
-      NAF.utils.getNetworkedEntity(el).then((networkedEl) => {
-        document.body.dispatchEvent(new CustomEvent('persistentEntityCreated', {detail: {el: el}}));
+      NAF.utils.getNetworkedEntity(box).then((networkedEl) => {
+        document.body.dispatchEvent(new CustomEvent('persistentEntityCreated'));
       });
 
 
