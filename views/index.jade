@@ -5,7 +5,7 @@ block content
   nav#mainmenu.navbar.navbar-expand-lg.bg-body-tertiary
     .container-fluid
       a.navbar-brand#add-cube(href="#") Add Cube
-      a.navbar-brand#add-mycube(href="#") Add My Cube
+      a.navbar-brand#add-umlclass(href="#") Add UML Class
 
   a-scene(persistent-p2p networked-scene="room: basic; debug: true; adapter: wseasyrtc;")
   
@@ -31,13 +31,22 @@ block content
             //- eye 2
             a-sphere(class="eye" color="white" position="-0.06 0.05 -0.16" scale="0.04 0.04 0.04")
               a-sphere(class="pupil" color="black" position="0 0 -1" scale="0.2 0.2 0.2")
-      
-      template(id="my-test")
-        a-entity(geometry="primitive:box" material="color:red" mycube)
 
-      template(id="mycube-template")
-        a-mycube
-    
+      template(id="umlclass-template")
+        a-umlclass
+
+    //- a-umlclass(
+    //-   classname="Class A"
+    //-   position="0 2 0"
+    //-   networked="template:#umlclass-template"
+    //- )
+
+    //- a-umlclass(
+    //-   classname="Class B"
+    //-   position="3 2 0"
+    //-   networked="template:#umlclass-template"
+    //- )
+      
     //- Here we declare only the local user's avatar, which we then broadcast to other users
     a-entity(id="rig")
       //- Here we add the camera.

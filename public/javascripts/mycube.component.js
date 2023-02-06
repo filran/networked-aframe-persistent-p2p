@@ -1,37 +1,36 @@
 AFRAME.registerPrimitive('a-mycube',{
   defaultComponents: {
-    'a-mycube-component': {}
+    'a-mycube-component': {},
   },
   mappings: {
-    position: 'a-mycube-component.position',
-    color: 'a-mycube-component.color',
-    template: 'a-mycube-component.template'
+    
   }
 });
 
 
 AFRAME.registerComponent('a-mycube-component', {
   schema: {
-    position: {default:'0 0 0'},
-    color: {default:'white'},
-    template: { default: '' }
+    position: {type:'vec3'},
+    material: {type:'string'},
   },
 
   init: function () {
-    this.el.setAttribute('networked', {persistent: true, template:this.data.template});
-
-    const el = document.createElement('a-box');
-    el.setAttribute('position', this.data.position);
-    el.setAttribute('color', this.data.color);
-    this.el.appendChild(el);
-    
-    NAF.utils.getNetworkedEntity(this.el).then((networkedEl) => {
-      document.body.dispatchEvent(new CustomEvent('persistentEntityCreated', {detail: {el: this.el}}));
-    });
+    // NAF.utils.getNetworkedEntity(this.el).then((networkedEl) => {
+    //   document.body.dispatchEvent(new CustomEvent('persistentEntityCreated', {detail: {el: this.el}}));
+    // });
   },
 
   update: function () {
     // Do something when component's data is updated.
+
+    setTimeout(()=>{
+      const box = document.createElement('a-box');
+      // box.setAttribute('position', this.data.position);
+
+      console.log('position', this.data.position);
+      console.log('this.el.position', this.el.getAttribute('position'));
+      console.log('material', this.data.material);
+    },1);
   },
 
   remove: function () {
