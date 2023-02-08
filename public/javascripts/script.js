@@ -1,8 +1,9 @@
 const addumlclass = document.querySelector('#add-umlclass');
 
 addumlclass.addEventListener('click', function(){
-  var position = getRandomFloat(-5,5,2)+" "+getRandomFloat(-5,5,2)+" "+getRandomFloat(-5,5,2);
-  var classname = "Class " + getRandomFloat(-5,5,2);
+
+  const position = getRandomFloat(-5,5,2)+" "+getRandomFloat(-5,5,2)+" "+getRandomFloat(-5,5,2);
+  const classname = "Class " + getRandomFloat(-5,5,2);
   
   const el = document.createElement('a-umlclass');
   el.setAttribute('classname', classname);

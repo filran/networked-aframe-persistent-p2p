@@ -64,7 +64,8 @@ html
             template: '#umlclass-template',
             components: [
               'position',
-              'rotation'
+              'rotation',
+              'classname'
             ]
           });
         }
@@ -103,8 +104,6 @@ html
       NAF.utils.getNetworkedEntity(box).then((networkedEl) => {
         document.body.dispatchEvent(new CustomEvent('persistentEntityCreated', {detail: {el: box}}));
       });
-
-
     });
 
   //- BOOTSTRAP

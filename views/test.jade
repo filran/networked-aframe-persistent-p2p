@@ -1,0 +1,153 @@
+doctype html
+html
+  head
+    link(rel='stylesheet', href='/stylesheets/style.css')
+
+    //- BOOTSTRAP
+    link(rel='stylesheet', href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css",  integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD", crossorigin="anonymous")
+
+    script(src="https://aframe.io/releases/1.3.0/aframe.min.js") 
+
+    //- NAF basic requirements
+    //- script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.5.0/socket.io.slim.js") 
+    script(src="/socketio/socket.io.slim.js") 
+    script(src="/easyrtc/easyrtc.js")
+    script(src="/javascripts/networked-aframe.js") 
+    script(src="/javascripts/persistent-p2p.component.js") 
+
+    script(src="/javascripts/color-changer.component.js") 
+    script(src="/javascripts/mycube.component.js") 
+    script(src="/javascripts/new-a-umlclass.component.js") 
+
+    //- used for flying in this demo
+    //- script(src="https://cdn.jsdelivr.net/gh/n5ro/aframe-extras@14411ea/dist/aframe-extras.controls.min.js") 
+
+    //- used for the pretty environment
+    script(src="https://unpkg.com/aframe-environment-component@1.3.2/dist/aframe-environment-component.min.js") 
+
+    //- used to prevent players from spawning on top of each other so much
+    script(src="/javascripts/spawn-in-circle.component.js")  
+
+    script.
+      // Called by Networked-Aframe when connected to server (optional)
+      // (this api will change in future versions)
+      function onConnect() {
+        console.log('onConnect', new Date());
+      }
+
+      // Note the way we're establishing the NAF schema here; this is a bit awkward
+      // because of a recent bug found in the original handling. This mitigates that bug for now,
+      // until a refactor in the future that should fix the issue more cleanly.
+      // see issue https://github.com/networked-aframe/networked-aframe/issues/267
+
+      // This one is necessary, because tracking the .head child component's material's color
+      // won't happen unless we tell NAF to keep it in sync, like here.
+      NAF.schemas.getComponentsOriginal = NAF.schemas.getComponents;
+      NAF.schemas.getComponents = (template) => {
+        if (!NAF.schemas.hasTemplate('#avatar-template')) {
+          NAF.schemas.add({
+            template: '#avatar-template',
+            components: [
+              'position',
+              'rotation',
+              {
+                selector: '.head',
+                component: 'material',
+                property: 'color'
+              }
+            ]
+          });
+        }
+
+        if (!NAF.schemas.hasTemplate('#umlclass-template')) {
+          NAF.schemas.add({
+            template: '#umlclass-template',
+            components: [
+              'position',
+              'rotation',
+              //- 'a-umlclass-component',
+              //- {
+              //-   selector: 'umlclass-box',
+              //-   component: 'color'
+              //- },
+              //- {
+              //-   selector: 'umlclass-classname',
+              //-   component: 'value'
+              //- }
+            ]
+          });
+        }
+
+        const components = NAF.schemas.getComponentsOriginal(template);
+        return components;
+      };    
+
+    script(src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js")
+
+    script.
+      function getRandomFloat(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+  body
+    a-scene(
+      cursor="rayOrigin:mouse"
+      raycaster="objects:.umlclass"
+      persistent-p2p
+      networked-scene="room: metasee; debug: true; adapter: wseasyrtc;"
+    )
+      //- environment
+      a-entity(environment="preset: egypt; skyColor: #fff")
+
+      a-assets
+        //- Head / Avatar // a few spheres make a head + eyes + pupils
+        template(id="avatar-template")
+          a-entity(class="avatar")
+            //- notice this child sphere, with class .head, has the random-color component; this modifies the material component's color property
+            a-sphere(class="head" scale="0.2 0.22 0.2" random-color)
+            a-entity(class="face" position="0 0.05 0")
+              //- eye 1
+              a-sphere(class="eye" color="white" position="0.06 0.05 -0.16" scale="0.04 0.04 0.04")
+                a-sphere(class="pupil" color="black" position="0 0 -1" scale="0.2 0.2 0.2")
+              //- eye 2
+              a-sphere(class="eye" color="white" position="-0.06 0.05 -0.16" scale="0.04 0.04 0.04")
+                a-sphere(class="pupil" color="black" position="0 0 -1" scale="0.2 0.2 0.2")
+
+        template(id="umlclass-template")
+          a-box.umlclass(color-changer)
+            //- a-box.umlclass-box(scale="1 0.5 0.1" color="red")
+            //- a-text.umlclass-classname(value="Class name" position="0 0 0.1" align="center" width="2.5")
+
+      //- a-entity(networked="template:#umlclass-template; networkId:umlclass-1")
+
+      
+      //- Here we declare only the local user's avatar, which we then broadcast to other users
+      a-entity(id="rig")
+        //- Here we add the camera.
+        a-entity(
+          id="player"
+          camera
+          position="0 1.6 0"
+          spawn-in-circle="radius:3"
+          look-controls
+          wasd-controls
+          networked="template:#avatar-template;attachTemplateToLocal:false;"
+          a-umlclass-component="template:#umlclass-template"
+          visible="false"
+        )
+          a-sphere.head(visible="false" random-color)
+
+
+    script.
+      //- const umlclass = document.querySelector('.umlclass');  
+      //- umlclass.addEventListener('click', function(){
+      //-   const newclassname = prompt('Enter the new uml class name:');
+      //-   if(newclassname){
+      //-     //- umlclass.setAttribute('a-umlclass-component' , 'classname:'+newclassname);
+      //-     const umlclassname = document.querySelector('.umlclass-classname');  
+      //-     umlclassname.setAttribute('value',newclassname);
+      //-   }
+      //- });
+
+    //- BOOTSTRAP
+    script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js", integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN", crossorigin="anonymous") 

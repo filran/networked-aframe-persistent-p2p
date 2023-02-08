@@ -2,12 +2,21 @@ extends layout
 
 block content
 
+  //- button(id="color-changer" style="z-index: 100; bottom: 24px; left: 24px; position: fixed" onclick="let newColor = window.ntExample.randomColor(); document.getElementById('player').setAttribute('player-info', 'color', newColor); document.querySelector('button').style.backgroundColor = newColor; document.querySelector('button').style.color = newColor;") ■
+    
+
+  //- input(id="username-overlay" style="z-index: 100; bottom: 24px; left: 48px; position: fixed" oninput="document.getElementById('player').setAttribute('player-info', 'name', this.value)")
+
   nav#mainmenu.navbar.navbar-expand-lg.bg-body-tertiary
     .container-fluid
       a.navbar-brand#add-cube(href="#") Add Cube
       a.navbar-brand#add-umlclass(href="#") Add UML Class
 
-  a-scene(persistent-p2p networked-scene="room: basic; debug: true; adapter: wseasyrtc;")
+  a-scene(
+    cursor="rayOrigin:mouse"
+    persistent-p2p
+    networked-scene="room: basic; debug: true; adapter: wseasyrtc;"
+  )
   
     a-assets
       //- img(id="skyTexture" src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/sechelt.jpg")
@@ -33,7 +42,7 @@ block content
               a-sphere(class="pupil" color="black" position="0 0 -1" scale="0.2 0.2 0.2")
 
       template(id="umlclass-template")
-        a-umlclass
+        a-umlclass      
 
     //- a-umlclass(
     //-   classname="Class A"
