@@ -9,7 +9,7 @@ html
     script(src="/socketio/socket.io.slim.js") 
     script(src="/easyrtc/easyrtc.js")
     script(src="/javascripts/networked-aframe.js") 
-
+    
     //- TEMPLATE 
     script.
       NAF.schemas.getComponentsOriginal = NAF.schemas.getComponents;
@@ -28,41 +28,83 @@ html
             ]
           });
         }
+
         if (!NAF.schemas.hasTemplate('#sphere-template')) {
           NAF.schemas.add({
             template: '#sphere-template',
             components: [
               'position',
+              'material'
+            ]
+          });
+        }
+
+        if (!NAF.schemas.hasTemplate('#new-spawner-template')) {
+          NAF.schemas.add({
+            template: '#new-spawner-template',
+            components: [
+              'position',
               {
+                selector: '.umlclass-box',
                 component: 'material',
                 property: 'color'
               }
             ]
           });
         }
+
+        if (!NAF.schemas.hasTemplate('#umlclass-template')) {
+          NAF.schemas.add({
+            template: '#umlclass-template',
+            components: [
+              'position',
+              'a-umlclass-component',
+              {
+                selector: '.umlclass-box',
+                component: 'material',
+                property: 'color'
+              },
+              {
+                selector: '.umlclass-classname',
+                component: 'value'
+              }
+            ]
+          });
+        }
+
         const components = NAF.schemas.getComponentsOriginal(template);
         return components;
       };
     
     script(src="https://unpkg.com/aframe-randomizer-components@^3.0.1/dist/aframe-randomizer-components.min.js") 
-    script(src="https://unpkg.com/aframe-environment-component@1.3.2/dist/aframe-environment-component.min.js") 
+    script(src="https://unpkg.com/aframe-environment-component@1.3.2/dist/aframe-environment-component.min.js")  
 
     script(src="/javascripts/spawn-in-circle.component.js")
     script(src="/javascripts/color-changer.component.js") 
     script(src="/javascripts/spawner-persistent.component.js") 
     script(src="/javascripts/persistent-p2p.component.js") 
+
+    script(src="/javascripts/new-spawner-persistent.js") 
+    script(src="/javascripts/new-a-umlclass.component.js") 
   body
     a-scene(
-      cursor="rayOrigin: mouse"
+      cursor="rayOrigin:mouse"
       raycaster="objects:.raycastable"
       persistent-p2p
-      networked-scene="
-        room: persistent-peer-to-peer;
-        debug: true;
-        adapter: wseasyrtc"
+      networked-scene="room:persistent-peer-to-peer; debug:true; adapter:wseasyrtc"
     )
 
       a-assets
+        template(id="umlclass-template")
+          a-umlclass
+            a-box.raycastable.umlclass-box(scale="1 0.5 0.1" material="color:blue" color-changer)
+            a-text.umlclass-classname(value="Class name" position="0 0 0.1" align="center" width="2.5")
+
+        template(id="new-spawner-template")
+          //- a-entity.umlclass
+          //-   a-box.raycastable.umlclass-box(scale="1 0.5 0.1" material="color:blue" color-changer)
+          //-   a-text.umlclass-classname(value="Class name" position="0 0 0.1" align="center" width="2.5")
+
         template(id="sphere-template")
           a-entity(class="raycastable" geometry="primitive: sphere" material="color: red" color-changer)
 
@@ -78,7 +120,11 @@ html
               a-sphere(class="eye" color="white" position="-0.06 0.05 -0.16" scale="0.04 0.04 0.04")
                 a-sphere(class="pupil" color="black" position="0 0 -1" scale="0.2 0.2 0.2")
 
-        a-entity(id="rig")
+      //- a-umlclass(networked="persistent:true; template:#umlclass-template")
+      //- a-umlclass(networked="persistent:true; template:#umlclass-template")
+      //- a-umlclass(networked="persistent:true; template:#umlclass-template")
+
+      a-entity(id="rig")
           //- Here we add the camera.
           a-entity(
             id="player"
@@ -86,11 +132,18 @@ html
             camera
             position="0 1.6 0"
             spawn-in-circle="radius:3"
-            spawner-persistent="template:#sphere-template"
+            new-spawner-persistent="template:#new-spawner-template"
             wasd-controls
             look-controls
           )
             a-sphere.head(visible="false" random-color)
 
-        a-entity(environment="preset:arches")
-        a-entity(light="type:ambient;intensity:0.5")
+      a-entity(environment="preset:arches")
+      a-entity(light="type:ambient;intensity:0.5")
+
+    script.
+      //- const newclassname = prompt('Enter class name');
+      //-   if(newclassname){
+      //-     const atext = this.el.childNodes[1];
+      //-     atext.setAttribute('value' , newclassname);
+      //-   }
