@@ -63,8 +63,8 @@ AFRAME.registerComponent('a-umlclass-component', {
 
     this.el.setAttribute('position' , {x:this.getRandomFloat(-5,5), y:this.getRandomFloat(.3,2), z:this.getRandomFloat(-5,5)});
 
-    // this.createBox();
-    // this.createClassName();
+    this.createBox();
+    this.createClassName();
   },
 
   update: function (oldData) {
@@ -98,14 +98,10 @@ AFRAME.registerComponent('a-umlclass-component', {
     return Math.random() * (max - min) + min;
   },
 
-  NAFregister: function(el){
-    NAF.utils.getNetworkedEntity(el).then((networkedEl) => {
-      document.body.dispatchEvent(new CustomEvent('persistentEntityCreated', {detail: {el: el}}));
-    });
-  },
-
   events:{
     click:function(){
+      NAF.utils.takeOwnership(this.el);
+
       const newclassname = prompt('Enter class name');
       if(newclassname){
         const atext = this.el.childNodes[1];
@@ -118,20 +114,5 @@ AFRAME.registerComponent('a-umlclass-component', {
     this.classname_element.setAttribute('value' , this.data.classname);
     // console.log('name changed to', this.data.classname);
   },
-
-  onKeyUp: function(e){
-    if (this.data.keyCode === e.keyCode) {
-
-    }
-  },
-
-  remove: function () {
-    // Do something the component or its entity is detached.
-  },
-
-  tick: function (time, timeDelta) {
-    // Do something on every scene tick or frame.
-  },
-
 
 });

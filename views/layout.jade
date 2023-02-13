@@ -65,7 +65,16 @@ html
             components: [
               'position',
               'rotation',
-              'classname'
+              'a-umlclass-component',
+              {
+                selector: '.umlclass-box',
+                component: 'material',
+                property: 'color'
+              },
+              {
+                selector: '.umlclass-classname',
+                component: 'value'
+              }
             ]
           });
         }
@@ -88,23 +97,23 @@ html
       return Math.random() * (max - min) + min;
     }
 
-    const addcube = document.querySelector("#add-cube");
+    //- const addcube = document.querySelector("#add-cube");
     
-    addcube.addEventListener('click', function(){
-      var position = getRandomFloat(-5,5,1)+" "+getRandomFloat(-5,5,1)+""+getRandomFloat(-5,5,1);
+    //- addcube.addEventListener('click', function(){
+    //-   var position = getRandomFloat(-5,5,1)+" "+getRandomFloat(-5,5,1)+""+getRandomFloat(-5,5,1);
 
-      const scene = document.querySelector('a-scene');
-      const box =  document.createElement("a-entity");
+    //-   const scene = document.querySelector('a-scene');
+    //-   const box =  document.createElement("a-entity");
       
-      box.setAttribute('position',position);
-      box.setAttribute('networked', {persistent: true, template:'#my-test'})
+    //-   box.setAttribute('position',position);
+    //-   box.setAttribute('networked', {persistent: true, template:'#my-test'})
       
-      scene.append(box);
+    //-   scene.append(box);
 
-      NAF.utils.getNetworkedEntity(box).then((networkedEl) => {
-        document.body.dispatchEvent(new CustomEvent('persistentEntityCreated', {detail: {el: box}}));
-      });
-    });
+    //-   NAF.utils.getNetworkedEntity(box).then((networkedEl) => {
+    //-     document.body.dispatchEvent(new CustomEvent('persistentEntityCreated', {detail: {el: box}}));
+    //-   });
+    //- });
 
   //- BOOTSTRAP
   script(src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js", integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN", crossorigin="anonymous") 

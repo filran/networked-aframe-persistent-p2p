@@ -10,5 +10,9 @@ addumlclass.addEventListener('click', function(){
   el.setAttribute('position', position);
   el.setAttribute('networked',{template:'#umlclass-template'});
 
+  NAF.utils.getNetworkedEntity(el).then((networkedEl) => {
+    document.body.dispatchEvent(new CustomEvent('persistentEntityCreated', {detail: {el: el}}));
+  });
+
   document.querySelector('a-scene').append(el);
 })
